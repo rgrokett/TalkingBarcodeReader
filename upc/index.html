@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Talking Barcode Reader</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/color.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<script type="text/javascript" src="js/jquery-1.6.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Talking Barcode Reader</h2>
+	<p>Click the buttons on datagrid toolbar to update.</p>
+	<p><B>Navigate to the Last Page (&gt;|) for newest records.</B></p>
+	
+	<table id="dg" title="UPC" class="easyui-datagrid" style="width:700px;height:500px"
+			url="get_upc.php"
+			toolbar="#toolbar" pagination="true"
+			rownumbers="false" fitColumns="true" singleSelect="true"
+			pageSize="20">
+		<thead>
+			<tr>
+				<th field="upc" width="20">UPC</th>
+				<th field="desc" width="60">Description</th>
+			</tr>
+		</thead>
+	</table>
+	<div id="toolbar">
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUPC()">New UPC</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUPC()">Edit UPC</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUPC()">Remove UPC</a>
+    		<span>&nbsp; UPC:</span>
+    		<input id="upc" style="line-height:26px;border:1px solid #ccc">
+    		<a href="#" class="easyui-linkbutton" plain="true" onclick="searchUPC()">Search</a>
+    		<a href="#" class="easyui-linkbutton" plain="true" onclick="resetForm()">Clear</a>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+			closed="true" buttons="#dlg-buttons">
+		<div class="ftitle">UPC Information</div>
+		<form id="fm" method="post" novalidate>
+			<div class="fitem">
+				<label>UPC:</label>
+				<input name="upc" class="easyui-textbox" required="true">
+			</div>
+			<div class="fitem">
+				<label>Desc:</label>
+				<input name="desc" class="easyui-textbox" required="true">
+			</div>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUPC()" style="width:90px">Save</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+	</div>
+	<script type="text/javascript">
+		var url;
+		function newUPC(){
+			$('#dlg').dialog('open').dialog('setTitle','New UPC');
+			$('#fm').form('clear');
+			url = 'save_upc.php';
+		}
+		function editUPC(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('setTitle','Edit UPC');
+				$('#fm').form('load',row);
+				url = 'update_upc.php?upc='+row.upc;
+			}
+		}
+		function saveUPC(){
+			$('#fm').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					var result = eval('('+result+')');
+					if (result.errorMsg){
+						$.messager.show({
+							title: 'Error',
+							msg: result.errorMsg
+						});
+					} else {
+						$('#dlg').dialog('close');		// close the dialog
+						$('#dg').datagrid('reload');	// reload the upc data
+					}
+				}
+			});
+		}
+		function destroyUPC(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('Confirm','Are you sure you want to delete this UPC code?',function(r){
+					if (r){
+						$.post('destroy_upc.php',{upc:row.upc},function(result){
+							if (result.success){
+								$('#dg').datagrid('reload');	// reload the upc data
+							} else {
+								$.messager.show({	// show error message
+									title: 'Error',
+									msg: result.errorMsg
+								});
+							}
+						},'json');
+					}
+				});
+			}
+		}
+		function searchUPC(){
+		    $('#dg').datagrid('load',{
+		        upc: $('#upc').val()
+    			});
+		}
+		function resetForm(){
+		    $('#upc').val('');
+		    $('#dg').datagrid('load',{
+		        upc: $('#upc').val()
+    			});
+		}
+	</script>
+	<style type="text/css">
+		#fm{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+		.fitem input{
+			width:160px;
+		}
+	</style>
+</body>
+</html>
