@@ -10,5 +10,5 @@ The idea was to scan an item and have the Raspberry query an internal database o
 
 In order to make the unit as small as possible, I wanted to use a Raspberry Pi Zero. I also didn’t want it to be dependent on Internet connectivity, so the database and the text-to-speech would be local. I also wanted to run the unit off battery power as well.
 
-See [[TalkingBarcodeReader.pdf](TalkingBarcodeReader.pdf) for details.
+See [TalkingBarcodeReader.pdf](TalkingBarcodeReader.pdf) for details.
 

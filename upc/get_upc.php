@@ -1,7 +1,7 @@
 <?php
 	$page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 	$rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
-	$upc = htmlspecialchars($_REQUEST['upc']);
+        $upc = isset($_POST['upc']) ? htmlspecialchars($_REQUEST['upc']) : "";
 
 	$offset = ($page-1)*$rows;
 	$result = array();
@@ -13,6 +13,7 @@
 	$row = $res->fetchArray();
 	$result["total"] = $row[0];
 
+	$where = "";
 	if ($upc) {
 	  $where = "where upc = '$upc'";
 	}
