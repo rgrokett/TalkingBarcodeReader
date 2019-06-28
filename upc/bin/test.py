@@ -27,7 +27,7 @@ ss = ""
 shift = False
 done = False
 
-print "Scan a barcode"
+print("Scan a barcode")
 
 while not done:
 	# Get the character from the HID
@@ -68,7 +68,7 @@ while not done:
                    ss += hid[ int(ord(c)) ]
          
 # END DONE LOOP  
-print ss
+print(ss)
 
          
 

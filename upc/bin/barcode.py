@@ -31,7 +31,7 @@ hid2 = { 4: 'A', 5: 'B', 6: 'C', 7: 'D', 8: 'E', 9: 'F', 10: 'G', 11: 'H', 12: '
 def speak(val): # TTS Speak
     cmd = "sudo flite -voice awb -t \""+str(val)+"\""
     if DEBUG:
-	print(cmd)
+        print(cmd)
     os.system(cmd)
     return
 
@@ -39,7 +39,7 @@ def volume(val): # Set Volume for Launch
     vol = int(val)
     cmd = "sudo amixer -q sset PCM,0 "+str(vol)+"%"
     if DEBUG:
-	print(cmd)
+        print(cmd)
     os.system(cmd)
     return
 
@@ -49,11 +49,11 @@ def exit():
     Exit handler, which clears all custom chars and shuts down the display.
     """
     try:
-	if not DISPLAY:
+        if not DISPLAY:
             lcd = RPi_I2C_driver.lcd()
             lcd.backlight(0)
         if DEBUG:
-            print "exit()"
+            print("exit()")
     except:
         # avoids ugly KeyboardInterrupt trace on console...
         pass
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     while not done:
 
-	# Get the character from the HID
+    # Get the character from the HID
         buffer = fp.read(8)
         for c in buffer:
           if ord(c) > 0:
@@ -119,7 +119,7 @@ if __name__ == '__main__':
          
     # END DONE LOOP  
     if DEBUG:
-    	print ss
+        print(ss)
 
 
     desc = "Sorry, cannot find this."
@@ -128,15 +128,15 @@ if __name__ == '__main__':
     # SEARCH DB FOR MATCH
     sqlcmd = "SELECT desc FROM upcdata where upc="+str(upc)
     if DEBUG:
-    	print sqlcmd
+        print(sqlcmd)
 
     for row in curs.execute(sqlcmd):
-	desc = row[0]
+        desc = row[0]
 
 
     # CALL TEXT TO SPEECH
     if DEBUG:
-	    print str(upc)+"="+str(desc)
+        print(str(upc)+"="+str(desc))
 
     speak(desc)
     fp.close()
